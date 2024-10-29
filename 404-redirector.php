@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: 404 ReDirector
- * Plugin URI: www.brainfruit.com
+ * Plugin URI: https://markenzeichen.de/digitalagentur-digital-marketing-experience
  * Description: 
- * Version: 1.0.2
- * Author: brainfruit
- * Author URI: www.brainfruit.com
+ * Version: 1.0.4
+ * Author: markenzeichen Digitalagentur
+ * Author URI: https://markenzeichen.de/digitalagentur-digital-marketing-experience
  * Text Domain: brainfruit_redirect
  * License: GPL2
  */
@@ -107,7 +107,7 @@ function bfr_redirector404_getTags($SlugsRaw) {
 
 /*##############################################################################                
 
-                Kalkulieren �bereinstimmung / evaluate similitary 
+                Kalkulieren uebereinstimmung / evaluate similitary 
 Parameter:
  * $SlugsRaw = the Array with the avaible Sites,Tags and Categories
  * $removeMe = the Site url
@@ -151,46 +151,6 @@ function bfr_redirector404_calc($SlugsRaw, $removeMe, $category_permalink, $tag_
                     $closestLink = $mixin[$i]['link'];
             }
     }                
-    
-/*##############################################################################                
-                Wenn nur ein Artikel in dieser Kategorie, dann zeige diesen.
- * F�r eine sp�tere Version
-*/##############################################################################
-/*                                
-    if (strpos($closestLink ,$category_permalink) !== false)
-    {
-        $closestCategory = str_replace( $removeMe, '', $closestLink );
-        $closestCategory = str_replace( $category_permalink, '', $closestCategory );     
-        $closestCategory = trim(str_replace( '/', '', $closestCategory ));                    
-
-        $posts = query_posts( 'category_name=' . $closestCategory );
-
-        if (count($posts) == 1) {
-            $closestLink = get_permalink($posts[0]->ID);                        
-        }                                        
-        wp_reset_query();
-    }
-                
-*/              
-/*##############################################################################                
-                Wenn nur ein Artikel diesem Tag zugeordnet ist, dann zeige diesen.
- * F�r eine sp�tere Version
-*/##############################################################################
-/*                             
-    if (strpos($closestLink ,$tag_permalink) !== false)
-    {
-        $closestTag = str_replace( $removeMe, '', $closestLink );                                                            
-        $closestTag = str_replace( $tag_permalink, '', $closestTag );                                                                
-        $closestTag = trim(str_replace( '/', '', $closestTag ));                                                                                                    
-
-        $posts = query_posts( 'tag=' . $closestTag );                                                            
-
-        if (count($posts) == 1) {
-            $closestLink = get_permalink($posts[0]->ID);                        
-        }          
-        wp_reset_query();                                        
-    }
-*/   
     return $closestLink;
 }
 
@@ -202,82 +162,61 @@ function bfr_redirector404_main() {
 		$SlugsRaw = array();			
 		$removeMe = site_url();
 		$url = bfr_redirector404_currentPageURL();	
+                                        
+        //Hole alle Seiten, Kategorien und Tags / get all Pages, Categories and Tags
+        $SlugsRaw = bfr_redirector404_getPages($SlugsRaw);                
+        $SlugsRaw = bfr_redirector404_getTags($SlugsRaw);                
+        $SlugsRaw = bfr_redirector404_getCats($SlugsRaw);
+                        
         
-        // echo $url;
-        	
-        // $lastUrlQueryString = array_pop( explode( "/", $url ) );                
-        // 
-        // //Added to fix Bug with multiple Folders          
-        // if (strlen($lastUrlQueryString) < 3)
-        // {
-        //     $UrlQueryArray = explode( "/", $url );
-        //     $UrlQueryIndex = count($UrlQueryArray);
-        //     
-        //     // echo '<pre>';
-        //     // print_r($UrlQueryArray);
-        //     // echo '</pre>';
-        //     // 
-        //     // echo count($UrlQueryArray);
-        //     // echo $UrlQueryArray[$UrlQueryIndex];
-        //     
-        //     $lastUrlQueryString = $UrlQueryArray[$UrlQueryIndex -2];
-        // }                                   
-                //Hole alle Seiten, Kategorien und Tags / get all Pages, Categories and Tags
-                $SlugsRaw = bfr_redirector404_getPages($SlugsRaw);                
-                $SlugsRaw = bfr_redirector404_getTags($SlugsRaw);                
-                $SlugsRaw = bfr_redirector404_getCats($SlugsRaw);
-                                
-                
-                //Hole Tag Permalink / get tag Permalink                 
-                $tag_permalink = get_option( 'tag_base' );
+        //Hole Tag Permalink / get tag Permalink                 
+        $tag_permalink = get_option( 'tag_base' );
 
-                if ($tag_permalink == "")
-                {
-                    $tag_permalink = "tag";
-                }
-                
-                $TagRemoved = false;
-                $TagPermalinkPos = strpos($url, $tag_permalink);
-                 
-                if ($TagPermalinkPos !== false)
-                {
-                    $lastUrlQueryString = array_pop( explode( $tag_permalink, $url ) );
-                    $TagRemoved = true;
-                }
-                              
-                                    
-                //Hole Kategorie Permalink / get category Permalink                              
-                $category_permalink = get_option( 'category_base' );
-                
-                if ($category_permalink == "")
-                {
-                    $category_permalink = "category";
-                }
-                
-                $categoryRemoved = false;
-                $CategoryPermalinkPos = strpos($url, $category_permalink);
-                 
-                if ($CategoryPermalinkPos !== false)
-                {
-                    $lastUrlQueryString = array_pop( explode( $CategoryPermalinkPos, $url ) );
-                    $categoryRemoved = true;
-                }
-                
-                
-                if (!$categoryRemoved && !$TagRemoved)
-                {
-                    $lastUrlQueryString = $url;
-                }
-                
-                // echo 'LastURLQueryString = ' . $lastUrlQueryString . '<br>';
-                               
-                //Hole den nahe liegesten Link / get the closest Link
-                $closestLink = bfr_redirector404_calc($SlugsRaw, $removeMe, $category_permalink, $tag_permalink, $lastUrlQueryString);
-                
-                //Weiterleiten / Redirect
+        if ($tag_permalink == "")
+        {
+            $tag_permalink = "tag";
+        }
+        
+        $TagRemoved = false;
+        $TagPermalinkPos = strpos($url, $tag_permalink);
+            
+        if ($TagPermalinkPos !== false)
+        {
+            $lastUrlQueryString = array_pop( explode( $tag_permalink, $url ) );
+            $TagRemoved = true;
+        }
+                        
+                            
+        //Hole Kategorie Permalink / get category Permalink                              
+        $category_permalink = get_option( 'category_base' );
+        
+        if ($category_permalink == "")
+        {
+            $category_permalink = "category";
+        }
+        
+        $categoryRemoved = false;
+        $CategoryPermalinkPos = strpos($url, $category_permalink);
+            
+        if ($CategoryPermalinkPos !== false)
+        {
+            $lastUrlQueryString = array_pop( explode( $CategoryPermalinkPos, $url ) );
+            $categoryRemoved = true;
+        }
+        
+        
+        if (!$categoryRemoved && !$TagRemoved)
+        {
+            $lastUrlQueryString = $url;
+        }
+        
+                        
+        //Hole den nahe liegesten Link / get the closest Link
+        $closestLink = bfr_redirector404_calc($SlugsRaw, $removeMe, $category_permalink, $tag_permalink, $lastUrlQueryString);
+        
+        //Weiterleiten / Redirect
 		wp_redirect( $closestLink, 301 );
 	}
-
 }
 add_action( 'template_redirect', 'bfr_redirector404_main' );
 ?>

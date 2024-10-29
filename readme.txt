@@ -2,12 +2,12 @@
 Contributors: brainfruit
 Plugin Name: 404 ReDirector
 Tags: 404, redirect, 301, permanent, SEO, network, multisite, mu, multiuser, permalinks, taxonomies
-Author URI: www.brainfruit.com
-Author: brainfruit
+Author URI: https://markenzeichen.de/digitalagentur-digital-marketing-experience
+Author: markenzeichen Digitalagentur
 Requires at least: 3.9
-Tested up to: 5.2
-Stable tag: 1.0.2
-Version: 1.0.2
+Tested up to: 6.6.2
+Stable tag: 1.0.4
+Version: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,6 +29,11 @@ Since this plugin doesn&rsquo;t need any configuration it works perfect in WordP
 
 
 == Changelog ==
+
+= 1.0.4 =
+- WordPress 6.6.2 compatibility
+- Author Change
+- Cleanup
 
 = 1.0.3 =
 - WordPress 5.2 compatibility
